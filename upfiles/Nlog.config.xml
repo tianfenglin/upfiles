@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      autoReload="true"
+      throwExceptions="false">
+  <targets>
+    <target xsi:type="File"
+            name="logfile"
+            fileName="${basedir}/logs/${shortdate}.log"
+            keepFileOpen="false"
+            layout="${longdate}|${callsite:fileName=True}|${uppercase:${level}}|${message} ${exception}" />
+    <target xsi:type="File"
+            name="debugfile"
+            fileName="${basedir}/logs/${shortdate}_debug.log"
+            keepFileOpen="false"
+            layout="${longdate}|${callsite:fileName=True}|${uppercase:${level}}|${message} ${exception}" />
+    <target xsi:type="File"
+            name="errfile"
+            fileName="${basedir}/logs/${shortdate}_error.log"
+            keepFileOpen="false"
+            layout="时间：${longdate}${newline} 类型：${callsite:fileName=True}${newline} 级别：${uppercase:${level}}${newline} 信息：${exception:format=ToString}${newline}${newline}" />
+  </targets>
+
+  <rules>
+    <!--<logger name="*" level="Debug" writeTo="debugfile" />-->
+    <logger name="*" level="Error" writeTo="errfile" />
+    <!--<logger name="*" minlevel="Trace" writeTo="logfile" />-->
+  </rules>
+
+</nlog>
