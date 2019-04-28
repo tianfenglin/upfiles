@@ -217,8 +217,17 @@ namespace upfiles.controller
         public string MergeBinary()
         {
             ResultHelper resultHelper = new ResultHelper();
-            string name = Request.Form["name"];
-            string path_wj = host.ContentRootPath + "\\files\\" + name;
+            string filename = Request.Form["filename"];
+            //是否采用文件原名称
+            string isoldname = Request.Form["isoldname"];
+            if (isoldname == "0")
+            {
+                string newname = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+                string[] fileform = filename.Split('.');
+                newname += "." + fileform[fileform.Length - 1];
+                filename = newname;
+            }
+            string path_wj = host.ContentRootPath + "\\files\\" + filename;
             //切片MD5值
             string name_wjj = Request.Form["fileMd5"];
             string path_fp_dz = host.ContentRootPath + "\\files\\" + name_wjj;
@@ -308,6 +317,7 @@ namespace upfiles.controller
                 Directory.Delete(path_fp_dz);
 
             }
+            resultHelper.UseId = filename;
             resultHelper.Msg = "合并成功";
             return resultHelper.GetResultInfo();
         }
