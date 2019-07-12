@@ -19,6 +19,10 @@ namespace upfiles
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+             .ConfigureAppConfiguration(build =>
+             {
+                 build.AddJsonFile("appsettings.json", false, true);
+             })
+             .UseStartup<Startup>();
     }
 }

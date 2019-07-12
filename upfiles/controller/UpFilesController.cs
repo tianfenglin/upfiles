@@ -172,10 +172,34 @@ namespace upfiles.controller
             return resultHelper.GetResultInfo();
         }
         /// <summary>
+        /// 是否是续传
+        /// </summary>
+        /// <returns>是：1 否：0</returns>
+        [Route("detectionmd5")]
+        public string DetectionMd5()
+        {
+            ResultHelper resultHelper = new ResultHelper();
+            //切片MD5值
+            string fileMd5 = Request.Form["fileMd5"];
+            //文件夹路径                                                  
+            string wjj_path = host.ContentRootPath + "\\files\\" + fileMd5;
+            if (!System.IO.Directory.Exists(wjj_path))
+            {
+                resultHelper.Msg = "0";
+            }
+            else
+            {
+                resultHelper.Msg = "1";
+            }
+            return resultHelper.GetResultInfo();
+        }
+
+        /// <summary>
         ///  检测文件切片是否存在和完整性
         /// </summary>
         /// <returns>已存在：1 不存在及数据不完整：0</returns>
-        public string Detection()
+        [Route("detectionbinary")]
+        public string DetectionBinary()
         {
             ResultHelper resultHelper = new ResultHelper();
             //切片MD5值
@@ -189,14 +213,17 @@ namespace upfiles.controller
             //文件路径
             string wj_path = wjj_path + "\\" + chunk;
             //判断文件夹和文件片段是否存在
-            if (!System.IO.Directory.Exists(wjj_path) || !System.IO.File.Exists(wj_path))
+            if (!System.IO.File.Exists(wj_path))
             {
                 resultHelper.Msg = "0";
             }
             else
             {
                 //判断文件大小是否一样防止数据不完整
-                long size = System.IO.File.OpenRead(wj_path).Length;
+                FileStream fileStream = System.IO.File.OpenRead(wj_path);
+                long size = fileStream.Length;
+                //释放文件占用，防止文件合并及上传完整切片文件无效
+                fileStream.Dispose();
                 if (chunkSize == size.ToString())
                 {
                     resultHelper.Msg = "1";
