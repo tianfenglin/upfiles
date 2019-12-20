@@ -30,6 +30,7 @@ namespace upfiles
             p => p.WithOrigins(corsoptions).AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
             services.AddMvc(options =>
             {
+                //自定义异常处理
                 options.Filters.Add<MyExceptionFilter>();
             });
         }
